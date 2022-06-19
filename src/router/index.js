@@ -11,7 +11,7 @@ Vue.use(VueRouter);
 let originPush = VueRouter.prototype.push;
 let originReplace = VueRouter.prototype.replace;
 
-//从写push|replace方法
+//重写push|replace方法
 //第一个参数：告诉原来的push方法往哪里跳转(传递哪些参数)
 //第二个参数：成功回调
 //第三个参数：失败回调
