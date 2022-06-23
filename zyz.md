@@ -74,7 +74,7 @@ XMLHTTPRequest,fetch,JQ,axios
 
 什么是跨域：协议，域名，端口号不同的请求，称之为跨域
 'http://localhost:8080/#/home'---前端项目的本地服务器
-'http://39.98.123.211'---后台服务器
+'http://gmall-h5-api.atguigu.cn'---后台服务器
 
 ### bprogress进度条的使用
 

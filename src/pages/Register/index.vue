@@ -4,9 +4,7 @@
     <div class="register">
       <h3>
         注册新用户
-        <span class="go"
-          >我有账号，去 <a href="login.html" target="_blank">登陆</a>
-        </span>
+        <span class="go">我有账号，去 <a href="login.html">登陆</a> </span>
       </h3>
       <div class="content">
         <label>手机号:</label>

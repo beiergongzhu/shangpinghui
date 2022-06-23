@@ -68,6 +68,7 @@ export default [
     path: "/pay",
     component: () => import("@/pages/Pay"),
     meta: { show: true },
+    //路由独享守卫
     beforeEnter: (to, from, next) => {
       //想要去支付页面（pay），必须从交易页面（trade）而来
       if (from.path === "/trade") {
