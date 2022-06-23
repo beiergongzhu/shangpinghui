@@ -49,7 +49,7 @@ new Vue({
   render: (h) => h(App),
   //全局事件总线$bus配置
   beforeCreate() {
-    //组件实例的原型的原型指向的是Vue.prototype
+    //组件实例的原型的原型指向的是Vue.prototype,this是Vue实例
     Vue.prototype.$bus = this;
     Vue.prototype.$API = API;
   },

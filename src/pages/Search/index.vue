@@ -17,7 +17,7 @@
               {{ searchParams.categoryName
               }}<i @click="removeCategoryName">×</i>
             </li>
-            <!-- 关键字（params参数）的面包屑 -->
+            <!-- 关键字keyword（params参数）的面包屑 -->
             <li class="with-x" v-if="searchParams.keyword">
               {{ searchParams.keyword }}<i @click="removeKeyword">×</i>
             </li>
@@ -26,7 +26,7 @@
               {{ searchParams.trademark.split(":")[1]
               }}<i @click="removeTradeMark">×</i>
             </li>
-            <!-- 平台的售卖属性展示 -->
+            <!-- 平台售卖属性的面包屑展示 -->
             <li
               class="with-x"
               v-for="(attrValue, index) in searchParams.props"
@@ -149,7 +149,7 @@ export default {
         categoryName: "", //分类的名字
         keyword: "", //关键字
         order: "1:desc", //排序: 初始状态应该是综合降序
-        pageNo: 1, //分页器用的，代表当前是第几页
+        pageNo: 1, //分页器用的，代表当前是第几页，默认为第一页
         pageSize: 10, //每一页展示数据的个数
         props: [], //平台售卖属性操作带的参数
         trademark: "", //品牌
@@ -186,7 +186,7 @@ export default {
     isDesc() {
       return this.searchParams.order.indexOf("desc") !== -1;
     },
-    //获取search模块一共展示多少产品
+    //从仓库中获取search模块一共展示多少产品（total）
     ...mapState({
       total: (state) => state.search.searchList.total,
     }),
@@ -219,14 +219,14 @@ export default {
       this.searchParams.keyword = undefined;
       //再次发请求
       this.getData();
-      //通知兄弟组件Header清除关键字
+      //通知兄弟组件Header清除关键字，面包屑被删了之后搜索框中的内容也应该删掉
       this.$bus.$emit("clear");
       //删除关键字时，query参数仍需保留
       if (this.$route.query) {
         this.$router.push({ name: "search", query: this.$route.query });
       }
     },
-    //自定义事件回调
+    //自定义事件回调 --- 子组件向父组件传递点击的品牌名
     trademarkInfo(trademark) {
       //1.整理品牌字段的参数 "ID: 品牌名称"
       this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
@@ -271,6 +271,7 @@ export default {
       this.searchParams.order = newOrder;
       this.getData();
     },
+    //分页器自定义事件的回调函数 --- 获取当前是第几页（子传父）
     getPageNo(pageNo) {
       //整理带给服务器的参数
       this.searchParams.pageNo = pageNo;

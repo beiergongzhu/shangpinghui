@@ -7,28 +7,29 @@
     <button
       v-show="startNumAndEndNum.start > 1"
       @click="$emit('getPageNo', 1)"
-      :class="{ active: pageNo == 1 }"
+      :class="{ active: pageNo === 1 }"
     >
       1
     </button>
-    <button v-show="startNumAndEndNum.start > 2">...</button>
+    <button v-show="startNumAndEndNum.start > 2">···</button>
 
-    <!-- 中间的连续页码部分 -->
+    <!-- 中间部分 -->
     <button
-      v-for="(page, index) in continues"
+      v-for="(page, index) in startNumAndEndNum.end"
       :key="index"
-      @click="$emit('getPageNo', startNumAndEndNum.start + page - 1)"
-      :class="{ active: pageNo == startNumAndEndNum.start + page - 1 }"
+      v-if="page >= startNumAndEndNum.start"
+      @click="$emit('getPageNo', page)"
+      :class="{ active: pageNo === page }"
     >
-      {{ startNumAndEndNum.start + page - 1 }}
+      {{ page }}
     </button>
 
     <!-- 下部 -->
-    <button v-show="startNumAndEndNum.end < totalPage - 1">...</button>
+    <button v-show="startNumAndEndNum.end < totalPage - 1">···</button>
     <button
       v-show="startNumAndEndNum.end < totalPage"
       @click="$emit('getPageNo', totalPage)"
-      :class="{ active: pageNo == totalPage }"
+      :class="{ active: pageNo === totalPage }"
     >
       {{ totalPage }}
     </button>
@@ -39,51 +40,52 @@
       下一页
     </button>
 
-    <button style="margin-left: 30px">共{{ total }}条</button>
+    <button style="margin-left: 30px">共 {{ total }} 条</button>
   </div>
 </template>
 
 <script>
 export default {
   name: "Pagination",
+  props: ["pageNo", "pageSize", "total", "continues"],
   data() {
     return {};
   },
-  props: ["pageNo", "pageSize", "total", "continues"],
+  methods: {},
   computed: {
-    //总共有多少页
+    //总共多少页
     totalPage() {
-      return Math.ceil(this.total / this.pageSize); //页数要向上取整
+      return Math.ceil(this.total / this.pageSize);
     },
-    //计算出中间连续页码的起始数字和结束数字（连续页码至少有5页）
+    //计算出连续页码的起始数字和结束数字
     startNumAndEndNum() {
-      const { pageNo, continues, totalPage } = this;
+      const { continues, pageNo, totalPage } = this; //解构
       //先定义两个变量存储起始数字与结束数字
-      let start = 0,
-        end = 0;
-      //连续页码至少为5页，如果出现不正常现象（即不够5页）
-      if (totalPage < continues) {
+      let start = 0;
+      let end = 0;
+      //连续的页码数为5（即至少为5页），如果出现不正常的现象（即不够5页）
+      if (continues > totalPage) {
+        //连续页码数大于总的页码数，即为不正常现象
         start = 1;
-        end = this.totalPage;
+        end = totalPage;
       } else {
-        //正常现象，总页数大于等于5
-        start = pageNo - parseInt(continues / 2); //parseInt为取整函数
+        //正常现象(总页数大于连续页码数)
+        start = pageNo - parseInt(continues / 2);
         end = pageNo + parseInt(continues / 2);
-        //把出现的不正常现象纠正（start为0或负数）
+        //把出现不正常的现象（start数字出现0和负数）纠正
         if (start < 1) {
           start = 1;
           end = continues;
         }
-        //end数字大于总页数
+        //把出现不正常的现象（end数字大于总页码）纠正
         if (end > totalPage) {
           end = totalPage;
           start = totalPage - continues + 1;
         }
       }
-      return { start, end };
+      return { start, end }; //key和value一致，省略value
     },
   },
-  methods: {},
 };
 </script>
 
@@ -112,6 +114,7 @@ export default {
   color: #c0c4cc;
   cursor: not-allowed;
 }
+/* 设置被选中按钮的样式 */
 .pagination .active {
   cursor: not-allowed;
   background: #409eff;
